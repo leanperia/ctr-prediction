@@ -23,7 +23,7 @@ The evaluation of the task will use an input dataset of new keywords and CPC for
 
 1. How did you manipulate the data, and why? Illustrate your answer with plots.
 
-See the EDA notebook. One important point was removing all rows with zeroes for five numeric features (ie CPC), accounting for 42% of the dataset. 
+See the EDA notebook. One important point was removing all rows with zeroes for five numeric features (ie CPC), accounting for 42% of the dataset. All decisions in data cleaning and transformation are explained there
 
 2. How did you perform NLP, if any?
 
