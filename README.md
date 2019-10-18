@@ -41,5 +41,7 @@ Since there are three regressors, three sets of explained variance scores and me
 
 Some points for improvement are:
 - The embedding functions generate a vector for each word, but for each keyword (which usually consist of multiple words) I only took the averages over each of the 772 dimensions. A lot of information is lost when averaging. The biggest performance boost would probably come from constructing an LSTM neural network
-- More vector embedding methods could have been tried. For example the larger ELMo embedding function could have been used, as it generates vectors of dimension greater than 2000. More hyperparameter tuning could have been performed
-- More ML models beyond CatBoost could have been tried. Generalized Linear models might be able to perform better seeing has a high number of dimensions and also a large number of training samples
+- More vector embedding methods could have been tried. For example the larger ELMo embedding function could have been used, as it generates vectors of dimension greater than 2000.
+- More ML models beyond CatBoost could have been tried. Generalized Linear models or Kernel-based methods might be able to perform better seeing that the problem has a high number of dimensions and also a large number of training samples
+- Bayesian optimization has not yet been applied on the ML model
+- Further feature engineering could be done beyond the choice of vector representation of the keyword. In a real-world situation, augmenting the predictor feature set would significantly help the predictive power of the resulting ML model. For example adding a column for time of day, season (winter/summer/etc). Other external events affect the trending keyword searches so perhaps extra features could be added that give the predictor extra context for a keyword.
