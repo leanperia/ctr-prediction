@@ -1,11 +1,21 @@
 # ctr-prediction
 
-install the requirements first
+First have Anaconda installed in your machine. Then install the requirements by:
 ```
 $ conda create --name new_env --file requirements.txt
 ```
 
-Then run the two notebooks in succession. Afterwards you can now use the function Predictor(Date, Market, Keyword, CPC) defined in the second notebook.
+Then run the two notebooks in succession. Afterwards you can now use the function Predictor(Date, Market, Keyword, CPC) defined at the end of the second notebook.
+
+Two utility scripts are provided. First is `prepare_data.py` which takes a csv file that is assumed to exactly follow the same format as the original provided dataset (ie CTR is a string like '2.54%' instead of a float). This script simply replicates the data cleaning and transformation actions taken in the EDA notebook. It prepares the data to be used in the second notebook. Usage is shown below.
+
+``` python -m prepare_data input.csv output.csv ```
+
+The second script ```evaluation.py``` uses the Predictor() function from the second notebook and applies it to a test dataset. The input csv file is assumed to follow the same format as the original provided dataset. An inference is performed for each data item in the input dataset, and then the explained variance score is computed for each of the five target variables and then printed to the screen. The resulting dataframe with the inputs, true targets and predicted targets is written to disk. Usage is shown below. 
+
+``` python -m evaluation test.csv result.csv --modelsdir models --prefix with-date-season ```
+
+It takes an extra two optional arguments providing the directory and filename prefix to the sklearn serialized models in disk. These models are the result of training in the second notebook, and defaults are provided - these defaults are the models that have performed the best so far.
 
 ## Problem Description
 
@@ -23,7 +33,19 @@ The evaluation of the task will use an input dataset of new keywords and CPC for
 
 1. How did you manipulate the data, and why? Illustrate your answer with plots.
 
-See the EDA notebook. One important point was removing all rows with zeroes for five numeric features (ie CPC), accounting for 42% of the dataset. All decisions in data cleaning and transformation are explained there
+See the EDA notebook. One important decision was removing all rows with zeroes for five numeric features (ie CPC), accounting for 42% of the dataset. All decisions in data cleaning and transformation are explained there, but in summary:
+
+| feature name        |    original format/type        |  transformation applied           |
+|:--------------------|:--------------------------|:----------------------------------|
+| Date                |    int: YYYYMMDD          |  3 new int features: Year, Month, Season  |
+| Market              | str: 'US-Market' or 'UK-Market' |   int: 1 or 0 (respectively)  |
+| Keyword             |    str                     |      take lowercase              |
+| CPC                 |   float                   |      apply np.log2                |
+| Clicks              |   float                   |      apply np.log10               |
+| CTR                 |   float (0 to 100)        |      (none)                       |
+| Impressions         |   float                   |      apply np.log10               |
+| Cost                |   float                   |      apply np.log10               |
+| AveragePosition     |   float  (0 to 12)        |      (none)                       |
 
 2. How did you perform NLP, if any?
 
@@ -31,11 +53,11 @@ I tried various word embedding algorithms and settled with ELMo as it performed 
 
 3. How did you model the problem, and why?
 
-As discussed in the EDA notebook, we have a multi-output regression problem. The input features are Date, Market, CPC and the keyword as a vector embedding. The output features are CTR, clicks, impressions, cost and average position. Since the values are related by simple formulas, we only need to construct a regressor for three features: CTR, clicks and average position. Our chosen machine learning model for the regressor are CatBoost gradient boosted trees as there are a few categorical input features.
+As discussed in the EDA notebook, we have a multi-output regression problem. The input features are Date, Market, CPC and the keyword as a vector embedding. I added Year, Month and Season categorical features derived from Date. The output features are CTR, clicks, impressions, cost and average position. Five regressors are constructed for the five target variables. Our chosen machine learning model for the regressor are CatBoost gradient boosted trees as there are a few categorical input features.
 
 4. How did you evaluate your model? What were the results of the evaluation?
 
-Since there are three regressors, three sets of explained variance scores and mean absolute errors were computed. The closer to 1.0 the explained variance score is, the better the model is. For model selection, 5-fold cross-validation was performed for each regressor after having chosen hyperparameters with RandomSearch and GridSearch. The constructed CatBoost regressor for CTR had a score of 0.87 and the regressor for Clicks had 0.94 which means the model predicts CTR and Clicks very well. The regressor for AveragePosition had a score of only 0.71, which is not as good as the other two. This may be a result of the fact that 95% of the data points had exactly 1.0 AveragePosition which will make it difficult to predict for any machine learning model, not to mention decision tree-based models.
+Five sets of explained variance scores and mean absolute errors were computed for five regressors. The closer to 1.0 the explained variance score is, the better the model is. For model selection, 5-fold cross-validation was performed for each regressor after having chosen hyperparameters with RandomSearch. See the second notebook for example results of cross-validation. The regressor for AveragePosition had a score of only 0.71, which is not as good as the other two. This may be a result of the fact that 95% of the data points had exactly 1.0 AveragePosition which will make it difficult to predict for any machine learning model, not to mention decision tree-based models.
 
 5. If you had extra time, what would you do next?
 
@@ -44,4 +66,4 @@ Some points for improvement are:
 - More vector embedding methods could have been tried. For example the larger ELMo embedding function could have been used, as it generates vectors of dimension greater than 2000.
 - More ML models beyond CatBoost could have been tried. Generalized Linear models or Kernel-based methods might be able to perform better seeing that the problem has a high number of dimensions and also a large number of training samples
 - Bayesian optimization has not yet been applied on the ML model
-- Further feature engineering could be done beyond the choice of vector representation of the keyword. In a real-world situation, augmenting the predictor feature set would significantly help the predictive power of the resulting ML model. For example adding a column for time of day, season (winter/summer/etc). Other external events affect the trending keyword searches so perhaps extra features could be added that give the predictor extra context for a keyword.
+- Better data will definitely lead to a better model. It would have been ideal to have similar amounts of data for each month, because the provided data is not balanced in that feature.

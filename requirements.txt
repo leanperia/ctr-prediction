@@ -17,7 +17,7 @@ boto3=1.9.253=pypi_0
 botocore=1.12.253=pypi_0
 bpemb=0.3.0=pypi_0
 bson=0.5.8=pypi_0
-ca-certificates=2019.8.28=0
+ca-certificates=2019.9.11=hecc5488_0
 catboost=0.17.5=py37_0
 certifi=2019.9.11=py37_0
 cffi=1.12.3=py37h2e261b9_0
@@ -94,6 +94,7 @@ libxcb=1.13=h1bed415_1
 libxml2=2.9.9=hea5a465_1
 markupsafe=1.1.1=py37h7b6447c_0
 matplotlib=3.1.1=py37h5429711_0
+matplotlib-venn=0.11.5=py_1
 mistune=0.8.4=py37h7b6447c_0
 mkl=2019.4=243
 mkl-service=2.3.0=py37he904b0f_0
@@ -113,7 +114,7 @@ numpy=1.17.2=py37haad9e8e_0
 numpy-base=1.17.2=py37hde5b4d6_0
 numpydoc=0.9.1=pypi_0
 olefile=0.46=py37_0
-openssl=1.1.1d=h7b6447c_3
+openssl=1.1.1c=h516909a_0
 overrides=2.0=pypi_0
 packaging=19.2=pypi_0
 pandas=0.25.1=py37he6710b0_0
