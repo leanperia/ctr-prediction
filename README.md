@@ -57,7 +57,9 @@ As discussed in the EDA notebook, we have a multi-output regression problem. The
 
 4. How did you evaluate your model? What were the results of the evaluation?
 
-Five sets of explained variance scores and mean absolute errors were computed for five regressors. The closer to 1.0 the explained variance score is, the better the model is. For model selection, 5-fold cross-validation was performed for each regressor after having chosen hyperparameters with RandomSearch. See the second notebook for example results of cross-validation. The regressor for AveragePosition had a score of only 0.71, which is not as good as the other two. This may be a result of the fact that 95% of the data points had exactly 1.0 AveragePosition which will make it difficult to predict for any machine learning model, not to mention decision tree-based models.
+Five sets of explained variance scores and mean absolute errors were computed for five regressors. The closer to 1.0 the explained variance score is, the better the model is. For model selection, 5-fold cross-validation was performed for each regressor after having chosen hyperparameters with RandomSearch. See the second notebook for example results of cross-validation. Also, the models folder contains two text file records of CV results for two different feature sets. Many more configurations were attempted, only these two got recorded. In addition, in the second notebook the cleaned dataset is divided into a training set and test set. Cross-validation is performed only on the training set. The test set is fed to ```evaluation.py```
+
+The regressors (for all configurations/hyperparameters) for AveragePosition had a score of around 0.5- 0.7, which is not as good as the other regressors (usually around 0.85-95). This may be a result of the fact that 95% of the data points had exactly 1.0 AveragePosition which will make it difficult to predict for any machine learning model, not to mention decision tree-based models.
 
 5. If you had extra time, what would you do next?
 
